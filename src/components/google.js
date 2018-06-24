@@ -1,6 +1,3 @@
-import axios from 'axios';
-
-
 var CLIENT_ID = '931961555766-aot1ba3fk1sikc65qn86qi1aaedvj78q.apps.googleusercontent.com';
 var SCOPES = ['https://www.googleapis.com/auth/spreadsheets',
     		  'https://www.googleapis.com/auth/documents'];
@@ -8,7 +5,6 @@ var SCRIPT_ID = "1iRU19QEE-aksImC375IYJH5BttLKLkSPooEbEEWW6xHXLy_pSq8ILhfJ";
 
 export default class GoogleApp{
     constructor(changeState){
-        console.log('google scripts');
         window.isReady = this.isReady;
         this.addScript();
         this.changeState = changeState;
@@ -31,33 +27,49 @@ export default class GoogleApp{
     needsAuth =(authResult)=>{
         const isAuth = (authResult && !authResult.error);
         if(!isAuth){
-            // Ask for Auth
             console.log('Needs Auth');
             return;
         }
-        this.changeState('noAuth');
+        this.changeState({
+          auth:true
+        });
+        this.getData();
     }
 
     click = (e)=>{
-        console.log(e);
-        var request = {
+        this.executeRequest({
             'function': 'doPost',
             'parameters': {some:'data'},
             'devMode': true // Optional.
-        };
+        });
+    }
 
+    getData=()=>{
+      this.changeState({
+        fecthingData:true
+      });
+      this.executeRequest({
+          'function': 'getData'
+      });
+    }
 
-        // Make the API request.
+    executeRequest =(request)=>{
         var op = gapi.client.request({
-            'root': 'https://script.googleapis.com',
-            'path': 'v1/scripts/' + SCRIPT_ID + ':run',
-            'method': 'POST',
-            'body': request
+          'root': 'https://script.googleapis.com',
+          'path': 'v1/scripts/' + SCRIPT_ID + ':run',
+          'method': 'POST',
+          'body': request
         });
         op.execute(this.handleGetDataResponse);
     }
 
     handleGetDataResponse =(resp)=> {
+        //const data = resp.response.result;
         console.log('Resp',resp);
+        /*
+        this.changeState({
+          data
+        });
+        */
     }
 };
