@@ -64,12 +64,13 @@ export default class GoogleApp{
     }
 
     handleGetDataResponse =(resp)=> {
-        //const data = resp.response.result;
-        console.log('Resp',resp);
-        /*
+      if( resp.response){
+        const data = resp.response.result;
         this.changeState({
           data
         });
-        */
+      } else {
+        console.log(resp);
+      }
     }
 };
