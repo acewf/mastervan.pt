@@ -162,9 +162,9 @@ module.exports = {
 				drop_console: true
 			}
 		}),
-
+    
 		new OfflinePlugin({
-			relativePaths: false,
+			relativePaths: true,
 			AppCache: false,
 			excludes: ['_redirects'],
 			ServiceWorker: {
@@ -176,8 +176,7 @@ module.exports = {
 					to: '/',
 					requestTypes: ['navigate']
 				}
-			],
-			publicPath: '/'
+			]
 		})
 	] : []),
 
