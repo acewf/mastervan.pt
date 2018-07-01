@@ -1,6 +1,7 @@
 import {
   SIGN_IN,
-  SIGN_OUT
+  SIGN_OUT,
+  UPDATE_SECTION_DATA
 } from './constants';
 
 const EMPTY = {};
@@ -22,10 +23,21 @@ export const sendData = (state, action)=>{
 }
 
 export const updateSection = (state, action)=>{
-  return {
-    ...state,
-    sheetData:action.data
+  if(action.type===UPDATE_SECTION_DATA){
+    const data = action.data;
+    const sheetData = state.sheetData;
+    sheetData[data.type].values[data.index].dayQtd = data.data.join();
+    // console.log(sheetData[data.type][data.index].dayQtd    );
+    return {
+      ...state,
+      sheetData
+    }
+  } else{
+    return {
+      ...state
+    }
   }
+  
 }
 
 export const signReducer = (state, action)=>{

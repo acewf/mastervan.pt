@@ -28,14 +28,14 @@ export default class Home extends Component {
         <div class={style.home}>
           <h1>{client}</h1>
           <p>{film}</p>
-          <Section data={communication}/>
-          <Section data={electricity}/>
-          <Section data={others}/>
-          <Section data={hotcold}/>
-          <Section data={signs}/>
-          <Section data={dress}/>
-          <Section data={caradds}/>
-          <Section data={lounge}/>
+          <Section type="communication" data={communication}/>
+          <Section type="electricity" data={electricity}/>
+          <Section type="others" data={others}/>
+          <Section type="hotcold" data={hotcold}/>
+          <Section type="signs" data={signs}/>
+          <Section type="dress" data={dress}/>
+          <Section type="caradds" data={caradds}/>
+          <Section type="lounge" data={lounge}/>
         </div>
       );
     } else if(!auth){

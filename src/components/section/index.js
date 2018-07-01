@@ -9,15 +9,17 @@ export default class Section extends Component {
   }
 
   render() {
-    const { data } = this.props;
+    const { data, type } = this.props;
     const { values, title } = data;
-    const listOfItems = values.map((itemData)=> {
+    const listOfItems = values.map((itemData, index)=> {
       return (<Item 
+        type={type}
         obs={itemData.obs} 
         name={itemData.name} 
         price={itemData.price}
         dayQtd={itemData.dayQtd}
         quantity={itemData.quantity}
+        index={index}
       />)
     })
     return (

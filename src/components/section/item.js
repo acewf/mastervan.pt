@@ -15,11 +15,22 @@ export default class Item extends Component {
     super(props);
 
     const { dayQtd, quantity } = props;
-    const days = dayQtd.length ? dayQtd.split(',') : [];
-    
+    const days = dayQtd.length ? dayQtd.split(',') : [Number(dayQtd)];
+
     this.state = {
       days,
       quantity
+    }
+  }
+
+  updateStateData(data){
+    this.setState(data);
+    if(data.days){
+      this.props.updateSectionData({
+        type:this.props.type, 
+        index:this.props.index,
+        data:data.days
+      });
     }
   }
 
@@ -27,13 +38,13 @@ export default class Item extends Component {
     const days = this.state.days;
     days.splice(index,1);
     const quantity = days.length>0? days.reduce(getSum) : 0;
-    this.setState({days, quantity});
+    this.updateStateData({days, quantity});
   }
 
   addDay = ()=>{
     const days = this.state.days;
     days.push(0);
-    this.setState({days});
+    this.updateStateData({days});
   }
 
   addQtd = (index)=>{
@@ -41,7 +52,7 @@ export default class Item extends Component {
     let days = this.state.days;
     days[index] = (qtd+1);
     const quantity = days.reduce(getSum);
-    this.setState({days,quantity});
+    this.updateStateData({days,quantity});
   }
 
   removeQtd = (index)=>{
@@ -50,13 +61,13 @@ export default class Item extends Component {
       const days = this.state.days;
       days[index] = Number(qtd-1);
       const quantity = days.reduce(getSum);
-      this.setState({days, quantity});
+      this.updateStateData({days, quantity});
     }
   }
 
   listDaysFromProps(dayQtd){
-    const days = dayQtd.length ? dayQtd.split(',') : [];
-    this.setState({days});
+    const days = dayQtd.length ? dayQtd.split(',') : [Number(dayQtd)];
+    this.updateStateData({days});
   }
 
   componentWillReceiveProps({ dayQtd }){

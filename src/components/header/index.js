@@ -14,7 +14,8 @@ export default class Header extends Component {
 		this.state = {
       auth:null,
       fecthingData:false,
-			data:null
+      data:null,
+      saving:false
 		}
     this.googleApp = new GoogleApp(this.changeStage);
 	}
@@ -32,12 +33,16 @@ export default class Header extends Component {
     }
     if(newState.data){
       this.props.receivedSheetData(newState.data);
-    }
-    
-	}
+    } 
+  }
+  
+  saveData = ()=>{
+    this.setState({saving:true});
+    this.googleApp.click(this.props.sheetData);
+  }
 
 	render() {
-		if(!this.state.auth){
+    if(!this.state.auth){
       return (
         <header class={style.header}>
           <h1>Sign in to use Bugget App</h1>
@@ -45,11 +50,17 @@ export default class Header extends Component {
         </header>  
       );
     }
+    let btElem = (<button class={`icon-floppy`} 
+    onClick={this.saveData}>Save Bugget</button>);
+
+    if(this.state.saving){
+      btElem = <div class={`${style.white} icon-spin1 animate-spin`} />;
+    }
 		return (
 			<header class={style.header}>
 				<h1>Bugget App</h1>
 				<nav>
-          <button onClick={this.googleApp.click}>Save Bugget</button>
+          {btElem}
 					<Link href="/">Home</Link>
 					<Link href="/profile">Me</Link>
 				</nav>

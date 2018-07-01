@@ -48,12 +48,12 @@ export default class GoogleApp{
         this.needsAuth);
     }
 
-    click = (e)=>{
-        this.executeRequest({
-            'function': 'doPost',
-            'parameters': {some:'data'},
-            'devMode': true // Optional.
-        });
+    click = (e,data)=>{
+      this.executeRequest({
+          'function': 'doPost',
+          'parameters': e,
+          'devMode': true // Optional.
+      });
     }
 
     getData=()=>{
@@ -78,9 +78,16 @@ export default class GoogleApp{
     handleGetDataResponse =(resp)=> {
       if( resp.response){
         const data = resp.response.result;
-        this.changeState({
-          data
-        });
+        if(data.saved){
+          console.log('SAVED:',data.saved);
+          this.changeState({
+            saving:false
+          });
+        } else {
+          this.changeState({
+            data
+          });
+        }
       } else {
         console.log(resp);
       }
