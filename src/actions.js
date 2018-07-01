@@ -1,7 +1,9 @@
 import {
   RECEIVED_DATA,
   GET_DATA,
-  UPDATE_SECTION_DATA
+  UPDATE_SECTION_DATA,
+  SIGN_OUT,
+  SIGN_IN
 } from './constants';
 
 export function getSheetData() {
@@ -22,5 +24,17 @@ export function updateSectionData(data) {
 	return {
     type: UPDATE_SECTION_DATA,
     data
+	};
+}
+
+export function signOut() {
+	return {
+    type: SIGN_OUT
+	};
+}
+
+export function signIn() {
+	return {
+    type: SIGN_IN
 	};
 }

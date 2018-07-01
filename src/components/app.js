@@ -17,14 +17,15 @@ export default class App extends Component {
 	};
 
 	render() {
+    console.log('Props:',this.props);
 		return (
       <Provider store={store}>
         <div id="app">
           <Header />
           <Router onChange={this.handleRoute}>
-            <Home path="/" />
-            <Profile path="/profile/" user="me" />
-            <Profile path="/profile/:user" />
+            <Home path={`${window.location.pathname}/`} />
+            <Profile path={`${window.location.pathname}/profile/`} user="me" />
+            <Profile path={`${window.location.pathname}/profile/:user`} />
           </Router>
         </div>
       </Provider>

@@ -159,12 +159,12 @@ module.exports = {
 				if_return: true,
 				join_vars: true,
 				cascade: true,
-				drop_console: true
+				drop_console: false
 			}
 		}),
-    
+
 		new OfflinePlugin({
-			relativePaths: true,
+			relativePaths: false,
 			AppCache: false,
 			excludes: ['_redirects'],
 			ServiceWorker: {
@@ -176,7 +176,8 @@ module.exports = {
 					to: '/',
 					requestTypes: ['navigate']
 				}
-			]
+			],
+			publicPath: './'
 		})
 	] : []),
 

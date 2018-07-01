@@ -1,5 +1,6 @@
 import {
-  UPDATE_SECTION_DATA
+  SIGN_IN,
+  SIGN_OUT
 } from './constants';
 
 const EMPTY = {};
@@ -21,9 +22,27 @@ export const sendData = (state, action)=>{
 }
 
 export const updateSection = (state, action)=>{
-  console.log(action.type,UPDATE_SECTION_DATA)
   return {
     ...state,
     sheetData:action.data
   }
+}
+
+export const signReducer = (state, action)=>{
+  let result;
+  switch (action.type) {
+    case SIGN_IN:
+      result = {
+        ...state,
+        auth:true
+      }
+    break;
+    case SIGN_OUT:
+      result = {
+        ...state,
+        auth:false
+      }
+    break;
+  }
+  return result;
 }

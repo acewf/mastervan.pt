@@ -5,35 +5,47 @@ var SCRIPT_ID = "1iRU19QEE-aksImC375IYJH5BttLKLkSPooEbEEWW6xHXLy_pSq8ILhfJ";
 
 export default class GoogleApp{
     constructor(changeState){
-        window.isReady = this.isReady;
-        this.addScript();
-        this.changeState = changeState;
+      window.isReady = this.isReady;
+      this.addScript();
+      this.changeState = changeState;
     }
 
     addScript = ()=>{
-        var newScript = document.createElement("script");
-        window.document.head.appendChild(newScript);
-        newScript.src = 'https://apis.google.com/js/client.js?onload=isReady';
+      var newScript = document.createElement("script");
+      window.document.head.appendChild(newScript);
+      newScript.src = 'https://apis.google.com/js/client.js?onload=isReady';
     }
 
     isReady =()=>{
-        gapi.auth.authorize({
-            'client_id': CLIENT_ID,
-            'scope': SCOPES,
-            'immediate': true
-        }, this.needsAuth);
+      gapi.auth.authorize({
+          'client_id': CLIENT_ID,
+          'scope': SCOPES,
+          'immediate': true
+      }, this.needsAuth);
     }
 
     needsAuth =(authResult)=>{
-        const isAuth = (authResult && !authResult.error);
-        if(!isAuth){
-            console.log('Needs Auth');
-            return;
-        }
+      const isAuth = (authResult && !authResult.error);
+      if(!isAuth){
+        console.log('Needs Auth');
         this.changeState({
-          auth:true
+          auth:false
         });
-        this.getData();
+        return;
+      }
+      this.changeState({
+        auth:true
+      });
+      this.getData();
+    }
+
+    auth = (event)=> {
+      gapi.auth.authorize({
+          client_id: CLIENT_ID,
+          scope: SCOPES,
+          immediate: false
+        },
+        this.needsAuth);
     }
 
     click = (e)=>{

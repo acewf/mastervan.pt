@@ -15,7 +15,7 @@ export default class Home extends Component {
   }
 
   render() {
-    const { sheetData } = this.props;
+    const { sheetData, auth } = this.props;
     const { 
       client, film,
       communication, electricity,
@@ -36,6 +36,12 @@ export default class Home extends Component {
           <Section data={dress}/>
           <Section data={caradds}/>
           <Section data={lounge}/>
+        </div>
+      );
+    } else if(!auth){
+      return (
+        <div class={style.home}>
+          <h1>Sign in first please.</h1>
         </div>
       );
     } else {
