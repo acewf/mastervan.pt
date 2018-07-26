@@ -15,6 +15,13 @@ export const receiveData = (state, action)=>{
   }
 }
 
+export const receiveFiles = (state, action)=>{
+  return {
+    ...state,
+    files:action.data
+  }
+}
+
 export const sendData = (state, action)=>{
   return {
     ...state,

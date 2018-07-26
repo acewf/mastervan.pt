@@ -1,8 +1,10 @@
 import { h, Component } from 'preact';
 import { Provider } from 'preact-redux';
-import { Router } from 'preact-router';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+
 
 import Header from './header';
+import Budget from './Budget';
 import Home from './home';
 import Profile from './profile';
 import store from './../store';
@@ -12,22 +14,36 @@ export default class App extends Component {
 	 *	@param {Object} event		"change" event from [preact-router](http://git.io/preact-router)
 	 *	@param {string} event.url	The newly routed URL
 	 */
-	handleRoute = e => {
-		this.currentUrl = e.url;
-	};
-
+  constructor(props){
+    super(props);
+  }
+  
 	render() {
-    console.log('Props:',this.props);
 		return (
       <Provider store={store}>
-        <div id="app">
-          <Header />
-          <Router onChange={this.handleRoute}>
-            <Home path={`${window.location.pathname}/`} />
-            <Profile path={`${window.location.pathname}/profile/`} user="me" />
-            <Profile path={`${window.location.pathname}/profile/:user`} />
-          </Router>
-        </div>
+        <BrowserRouter>
+          <div id="app">
+            <Header/>
+              <Switch>
+                <Route exact 
+                  path="/" 
+                  render={()=><Home/>
+                } />
+                <Route  
+                  path="/budget/:id" 
+                  render={()=> <Budget />
+                } />
+                <Route  
+                  path="/profile" 
+                  render={()=> <Profile user="me" />
+                } />
+                <Route  
+                  path="/profile/:user" 
+                  render={()=> <Profile />
+                } />
+              </Switch>
+          </div>
+        </BrowserRouter>
       </Provider>
 		);
 	}

@@ -36,7 +36,7 @@ export default class GoogleApp{
       this.changeState({
         auth:true
       });
-      this.getData();
+      this.getFiles();
     }
 
     auth = (event)=> {
@@ -48,11 +48,20 @@ export default class GoogleApp{
         this.needsAuth);
     }
 
-    click = (e,data)=>{
+    saveData = (data,callback)=>{
       this.executeRequest({
-          'function': 'doPost',
-          'parameters': e,
-          'devMode': true // Optional.
+          function: 'doPost',
+          callback,
+          parameters: data,
+          devMode: true // Optional.
+      });
+    }
+
+    newBudget = (callback)=>{
+      this.executeRequest({
+          function: 'createNewFile',
+          callback,
+          devMode: true
       });
     }
 
@@ -65,6 +74,15 @@ export default class GoogleApp{
       });
     }
 
+    getFiles=()=>{
+      this.changeState({
+        fecthingData:true
+      });
+      this.executeRequest({
+          'function': 'getFiles'
+      });
+    }
+
     executeRequest =(request)=>{
         var op = gapi.client.request({
           'root': 'https://script.googleapis.com',
@@ -72,24 +90,27 @@ export default class GoogleApp{
           'method': 'POST',
           'body': request
         });
-        op.execute(this.handleGetDataResponse);
+        op.execute((resp)=>{
+          this.handleGetDataResponse(resp, {
+            type:request.function,
+            callback:request.callback
+          });
+        });
     }
 
-    handleGetDataResponse =(resp)=> {
-      if( resp.response){
+    handleGetDataResponse =(resp,{type,callback})=> {
+      if(callback){
         const data = resp.response.result;
-        if(data.saved){
-          console.log('SAVED:',data.saved);
-          this.changeState({
-            saving:false
-          });
-        } else {
-          this.changeState({
-            data
-          });
-        }
-      } else {
-        console.log(resp);
-      }
+        callback.call(this, {
+          status:resp.done,
+          data
+        });
+      } else if( resp.response){
+        const data = resp.response.result;
+        this.changeState({
+          data,
+          type
+        });
+      } 
     }
 };

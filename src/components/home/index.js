@@ -1,11 +1,13 @@
 import { h, Component } from 'preact';
 import { connect } from 'preact-redux';
+import { Link } from 'preact-router';
 import style from './style.less';
 
 import * as actions from './../../actions';
 import reduce from '../../reducers';
 
-import Section from './../section';
+import Loading from './../loading';
+import Files from './../Files';
 
 @connect(reduce, actions)
 export default class Home extends Component {
@@ -15,40 +17,26 @@ export default class Home extends Component {
   }
 
   render() {
-    const { sheetData, auth } = this.props;
-    const { 
-      client, film,
-      communication, electricity,
-      caradds, signs, hotcold,
-      dress, lounge, others
-     } = sheetData;
+    const { files, auth } = this.props;
 
-    if(client){
-      return (
-        <div class={style.home}>
-          <h1>{client}</h1>
-          <p>{film}</p>
-          <Section type="communication" data={communication}/>
-          <Section type="electricity" data={electricity}/>
-          <Section type="others" data={others}/>
-          <Section type="hotcold" data={hotcold}/>
-          <Section type="signs" data={signs}/>
-          <Section type="dress" data={dress}/>
-          <Section type="caradds" data={caradds}/>
-          <Section type="lounge" data={lounge}/>
-        </div>
-      );
-    } else if(!auth){
+    if(!auth){
       return (
         <div class={style.home}>
           <h1>Sign in first please.</h1>
         </div>
       );
-    } else {
+    }
+
+    if(files){
       return (
         <div class={style.home}>
-          <h1>Loading..</h1>
+          <h1>List of budgets</h1>
+          <Files data={files}/>
         </div>
+      );
+    } else {
+      return (
+        <Loading style={style}/>
       );
     }
   }

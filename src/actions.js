@@ -1,5 +1,6 @@
 import {
   RECEIVED_DATA,
+  RECEIVED_FILES,
   GET_DATA,
   UPDATE_SECTION_DATA,
   SIGN_OUT,
@@ -16,6 +17,13 @@ export function getSheetData() {
 export function receivedSheetData(data) {
 	return {
     type: RECEIVED_DATA,
+    data
+	};
+}
+
+export function receivedFiles(data) {
+	return {
+    type: RECEIVED_FILES,
     data
 	};
 }
