@@ -4,23 +4,36 @@ import {
   RECEIVED_FILES,
   UPDATE_SECTION_DATA,
   SIGN_IN,
-  SIGN_OUT
+  SIGN_OUT,
+  LOG_STATUS,
+  CREATE_BUDGET,
+  BUDGET_CREATED,
+  GET_FILES,
+  GET_DATA
 } from './constants';
 
-import { receiveData, receiveFiles, updateSection, signReducer } from './reducers';
+import { receiveData, receiveFiles, updateSection, signReducer, googleAppAction } from './reducers';
 
 let ACTIONS = {
   [RECEIVED_DATA]:receiveData,
   [RECEIVED_FILES]:receiveFiles,
   [UPDATE_SECTION_DATA]:updateSection,
   [SIGN_IN]:signReducer,
-  [SIGN_OUT]:signReducer
+  [SIGN_OUT]:signReducer,
+  [LOG_STATUS]:signReducer,
+  [CREATE_BUDGET]:googleAppAction,
+  [BUDGET_CREATED]:googleAppAction,
+  [GET_FILES]:googleAppAction,
+  [GET_DATA]:googleAppAction
 };
 
 const INITIAL = {
-  sheetData: [],
+  sheetData: {},
   auth:false,
-  files:[]
+  files:[],
+  googleApp:{
+    action: null
+  }
 };
 
 export default createStore( (state, action) => (
