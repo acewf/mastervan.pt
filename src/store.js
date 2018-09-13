@@ -9,13 +9,19 @@ import {
   CREATE_BUDGET,
   BUDGET_CREATED,
   GET_FILES,
-  GET_DATA
+  GET_DATA,
+  SAVE_DATA
 } from './constants';
 
-import { receiveData, receiveFiles, updateSection, signReducer, googleAppAction } from './reducers';
+import { 
+  receiveData, receiveFiles,
+  updateSection, signReducer, 
+  googleAppAction, sendData
+} from './reducers';
 
 let ACTIONS = {
   [RECEIVED_DATA]:receiveData,
+  [SAVE_DATA]:sendData,
   [RECEIVED_FILES]:receiveFiles,
   [UPDATE_SECTION_DATA]:updateSection,
   [SIGN_IN]:signReducer,

@@ -35,9 +35,6 @@ export default class Home extends Component {
         if(action === CREATE_BUDGET){
           this.setState({loading: true});
         }
-        if(action === BUDGET_CREATED){
-          this.props.history.push(`/budget/${googleApp.data.id}`);
-        }
         if(action === GET_FILES){
           this.setState({loading: true});
         }

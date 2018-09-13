@@ -7,7 +7,9 @@ import {
   BUDGET_CREATED,
   GET_FILES,
   RECEIVED_FILES,
-  GET_DATA
+  GET_DATA,
+  RECEIVED_DATA,
+  SAVE_DATA
 } from './constants';
 
 const EMPTY = {};
@@ -17,7 +19,14 @@ export default store => store || EMPTY;
 export const receiveData = (state, action)=>{
   return {
     ...state,
-    sheetData:action.data
+    googleApp:{
+      ...state.googleApp,
+      action: RECEIVED_DATA
+    },
+    sheetData:{
+      ...state.sheetData,
+      [action.slug]:action.data
+    }
   }
 }
 
@@ -36,7 +45,11 @@ export const receiveFiles = (state, action)=>{
 export const sendData = (state, action)=>{
   return {
     ...state,
-    sheetData:action.data
+    sheetData:action.data,
+    googleApp:{
+      ...state.googleApp,
+      action: SAVE_DATA
+    }
   }
 }
 
@@ -76,12 +89,21 @@ export const googleAppAction = (state, action)=>{
   }
 }
 
+const getSum = (total, num)=> {
+  return Number(total) + Number(num);
+}
+
 export const updateSection = (state, action)=>{
   if(action.type===UPDATE_SECTION_DATA){
     const data = action.data;
-    const sheetData = state.sheetData;
-    sheetData[data.type].values[data.index].dayQtd = data.data.join();
-    // console.log(sheetData[data.type][data.index].dayQtd    );
+    const sheetData = {
+      ...state.sheetData
+    };
+    const daysArray = data.data;
+    const quantity = data.data.lenght ? data.data.reduce(getSum) : 0;
+    console.log('updateSection', daysArray, quantity);
+    sheetData[action.slug][data.type].values[data.index].dayQtd = daysArray.join();
+    sheetData[action.slug][data.type].values[data.index].quantity = quantity;
     return {
       ...state,
       sheetData

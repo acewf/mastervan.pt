@@ -1,11 +1,12 @@
 import { connect } from 'preact-redux';
-
+import { withRouter } from 'react-router'
 import {
   GET_FILES,
   CREATE_BUDGET,
   CLIENT_ID,
   SCOPES,
-  SCRIPT_ID
+  SCRIPT_ID,
+  GET_DATA
 } from './../constants';
 
 import * as actions from './../actions';
@@ -18,6 +19,7 @@ const defaultState =  {
   gettingFileData:false,
 }
 
+@withRouter
 @connect(reduce, actions)
 export default class GoogleApp{
   constructor(){
@@ -35,7 +37,8 @@ export default class GoogleApp{
       const newState = {
         ...state,
         gettingFiles:defaultState.gettingFiles,
-        creatingBudget:defaultState.creatingBudget
+        creatingBudget:defaultState.creatingBudget,
+        gettingFileData:defaultState.gettingFileData
       }
       if(action===GET_FILES && !state.gettingFiles){
         newState.gettingFiles = true;
@@ -43,7 +46,7 @@ export default class GoogleApp{
       if(action===CREATE_BUDGET && !state.creatingBudget){
         newState.creatingBudget = true;
       }
-      if(action===CREATE_BUDGET && !state.creatingBudget){
+      if(action===GET_DATA && !state.gettingFileData){
         newState.gettingFileData = true;
       }
 
@@ -65,6 +68,8 @@ export default class GoogleApp{
       gettingFileData
     } = this.state;
 
+    const { googleApp } = this.props;
+
     if(gettingFiles){
       this.getFiles(this.gotFiles);
     }
@@ -72,7 +77,7 @@ export default class GoogleApp{
       this.newBudget(this.budgetCreated);
     }
     if(gettingFileData){
-      this.newBudget(this.budgetCreated);
+      this.getFileData(googleApp.data,this.gotFileData);
     }
     return (null);
   }
@@ -120,15 +125,23 @@ export default class GoogleApp{
     });
   }
 
-  budgetCreated = (data)=>{
-   this.props.budgetCreated(data);
+  budgetCreated = (req)=>{
+    this.props.history.push(`/budget/${req.data.id}`);
+    this.props.budgetCreated(req);
   }
 
-  getData=(data)=>{
+  getFileData=(data, callback)=>{
     this.executeRequest({
         parameters: data,
-        function: 'getData'
+        function: 'getData',
+        callback
     });
+  }
+
+  gotFileData=(req)=>{
+    const { googleApp } = this.props;
+    const slug = googleApp.data;
+    this.props.receivedSheetData(req.data, slug);
   }
 
   getFiles=(callback)=>{
@@ -158,16 +171,16 @@ export default class GoogleApp{
   }
 
   handleGetDataResponse =(resp,{type,callback})=> {
-    if(callback){
+    if(resp.error){
+      console.error(resp);
+    } else if(callback && resp.done){
       const data = resp.response.result;
       callback.call(this, {
         status:resp.done,
         data
       });
-    } else if( resp.response){
-      const data = resp.response.result;
-      //  data,
-      //  type
-    } 
+    } else {
+      console.error(resp);
+    }
   }
 };

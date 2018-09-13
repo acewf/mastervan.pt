@@ -1,6 +1,7 @@
 import {
   RECEIVED_DATA,
   RECEIVED_FILES,
+  SAVE_DATA,
   GET_DATA,
   UPDATE_SECTION_DATA,
   SIGN_OUT,
@@ -19,10 +20,11 @@ export function getSheetData(slug) {
 }
 
 
-export function receivedSheetData(data) {
+export function receivedSheetData(data, slug) {
 	return {
     type: RECEIVED_DATA,
-    data
+    data,
+    slug
 	};
 }
 
@@ -34,10 +36,18 @@ export function receivedFiles(ResultData) {
 	};
 }
 
-export function updateSectionData(data) {
+export function updateSectionData(data, slug) {
 	return {
     type: UPDATE_SECTION_DATA,
-    data
+    data,
+    slug
+	};
+}
+
+export function saveSheetData(slug) {
+	return {
+    type: SAVE_DATA,
+    payload:slug
 	};
 }
 

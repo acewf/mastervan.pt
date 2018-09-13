@@ -14,23 +14,27 @@ export default class Item extends Component {
   constructor(props){
     super(props);
 
-    const { dayQtd, quantity } = props;
-    const days = dayQtd.length ? dayQtd.split(',') : [Number(dayQtd)];
+    const { dayQtd, quantity, slug } = props;
+    const days = dayQtd.length ? dayQtd.split(',').map(i=>Number(i)) : [Number(dayQtd)];
 
     this.state = {
       days,
-      quantity
+      slug,
+      quantity:Number(quantity)
     }
   }
 
-  updateStateData(data){
-    this.setState(data);
+  updateStateData = (data)=>{
     if(data.days){
+      const { slug } = this.state;
       this.props.updateSectionData({
         type:this.props.type, 
         index:this.props.index,
         data:data.days
-      });
+      }, slug);
+      if(data.quantity>=0){
+        this.setState({quantity:data.quantity})
+      }
     }
   }
 
@@ -65,14 +69,6 @@ export default class Item extends Component {
     }
   }
 
-  listDaysFromProps(dayQtd){
-    const days = dayQtd.length ? dayQtd.split(',') : [Number(dayQtd)];
-    this.updateStateData({days});
-  }
-
-  componentWillReceiveProps({ dayQtd }){
-    this.listDaysFromProps(dayQtd);
-  }
 
   dayQuantity = (itemsPerDay, index)=>{
     return (
@@ -91,7 +87,7 @@ export default class Item extends Component {
     const listOfDays = days.map(this.dayQuantity);
     return (
       <div  class={style.item}>
-        <div>
+        <div class={style.itemProps}>
           <h5>{name}</h5>
           <div class={style.price}>Item Price:{price}€</div>
           <div class={style.quantity}>Total Quantity:{quantity}</div>

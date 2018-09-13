@@ -2,11 +2,15 @@
 
 .item {
   display: block;
+  width: 100%;
   box-sizing: border-box;
+  padding: 20px 0px;
 
   ul{
     list-style-type: none;
     -webkit-padding-start:0;
+    -webkit-margin-after: 0;
+    -webkit-margin-before: 0;
     
     li{
       margin: 5px;
@@ -19,6 +23,13 @@
     margin: 0 10px;
     background-color: #125bff5e;
   }
+
+  button.addDay {
+    background-color: whitesmoke;
+    border-width: 2px;
+    border-radius: 5px;
+    padding: 5px 8px;
+  }
 	
 	h5 {
     margin: 0;
@@ -30,11 +41,33 @@
     display: inline-block;
   }
 }
+
+.itemProps{
+  width: 100%;
+}
+
+.item:nth-child(even) {
+  background:rgba(0,0,0,.4);
+}
+
+.item:nth-child(odd) {
+  background:rgba(0,0,0,.8);
+  color: #ffffff;
+
+  h5, button{
+    color: #ffffff;
+  }
+  button.addDay {
+    color: #000;
+  }
+}
+
 .price {
   margin-right: 10px;
 }
 
 .quantity {
   display: inline-block;
+  margin-right: 5px;
   float: right;
 }

@@ -1,6 +1,7 @@
 // import 'promise-polyfill';
 // import 'isomorphic-fetch';
 import { h, render } from 'preact';
+import './lib/array/equals';
 import './style';
 
 let root;

@@ -24,7 +24,7 @@ export default class App extends Component {
                 } />
                 <Route
                   path="/budget/:slug" 
-                  render={(props)=><Budget {...props}/>}
+                  render={Budget}
                 />
                 <Route  
                   path="/profile" 

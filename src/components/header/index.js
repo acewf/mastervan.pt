@@ -6,13 +6,14 @@ import style from './style.less';
 
 import * as actions from './../../actions';
 import reduce from '../../reducers';
+import { GET_DATA, RECEIVED_DATA, GET_FILES } from '../../constants';
 
 import { NewBudgetBt, SaveBudgetBt } from './actionButtons'
 
 const screens = {
   CREATE:'CREATE',
   SAVE:'SAVE',
-  SAVING:'SAVING'
+  LOADING:'LOADING'
 }
 
 @withRouter
@@ -21,9 +22,6 @@ export default class Header extends Component {
 	constructor(props){
     super(props);
 		this.state = {
-      fecthingData:false,
-      saving:false,
-      type:null,
       activeScreen:screens.CREATE
 		}
   }
@@ -33,14 +31,16 @@ export default class Header extends Component {
   }
   
   saveData = ()=>{
-    const { googleApp } = this.props;
-    this.setState({ activeScreen:screens.SAVING});
+    const { slug } = this.state;
+    const { saveSheetData } = this.props;
+    // saveSheetData(slug)
+    //this.setState({ activeScreen:screens.LOADING});
     // googleApp.saveData(this.props.sheetData, this.dataSaved);
   }
 
   createBudget = ()=>{
     const { googleApp, newBudget } = this.props;
-    this.setState({activeScreen:screens.SAVING});
+    this.setState({activeScreen:screens.LOADING});
     newBudget();
   }
 
@@ -54,16 +54,23 @@ export default class Header extends Component {
   }
 
   locationChanged = (props)=>{
-    const {match:{params} }= props;
-    const { auth } = this.state;
-    const { dir,slug }= params;
-    if(auth && slug){
-      this.setState({activeScreen:screens.SAVE});
+    const { match:{params} }= props;
+    const { googleApp: { action } } = this.props;
+    const { slug } = params;
+    const { activeScreen } = this.state;
+
+    const isLoading = (action === GET_DATA || action===GET_FILES);
+    if(isLoading && activeScreen!==screens.LOADING){
+      this.setState({activeScreen:screens.LOADING, slug});
+    } else if(!isLoading && slug && activeScreen!==screens.SAVE){
+      this.setState({activeScreen:screens.SAVE, slug});
+    } else if(!isLoading && slug===undefined  && activeScreen!==screens.CREATE){
+      this.setState({activeScreen:screens.CREATE, slug:null});
     }
   }
 
 	render() {    
-    const { auth, signIn } = this.props;
+    const { auth, signIn, location } = this.props;
 
     if(!auth){
       return (
@@ -74,16 +81,27 @@ export default class Header extends Component {
       );
     }
     const { activeScreen } = this.state;
-    
-    let btElem = activeScreen===screens.CREATE ? <NewBudgetBt action={this.createBudget}/> 
-        :<SaveBudgetBt action={this.saveData}/>;
-
-    if(activeScreen.SAVING){
-      btElem = <div class={`${style.white} icon-spin1 animate-spin`} />;
+    let btElem;
+    switch (activeScreen) {
+      case screens.SAVE:
+        btElem = <SaveBudgetBt action={this.saveData}/>
+        break;
+      case screens.LOADING:
+        btElem = <div class={`${style.white} icon-spin1 animate-spin`} />
+        break;
+      default:
+        btElem = <NewBudgetBt action={this.createBudget}/> 
+        break;
     }
 		return (
 			<header class={style.header}>
         <Route
+          exact
+          path="/" 
+          render={this.locationChanged} 
+        />
+        <Route
+          exact
           path="/:dir/:slug" 
           render={this.locationChanged} 
         />
