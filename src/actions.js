@@ -2,6 +2,7 @@ import {
   RECEIVED_DATA,
   RECEIVED_FILES,
   SAVE_DATA,
+  DATA_SAVED,
   GET_DATA,
   UPDATE_SECTION_DATA,
   SIGN_OUT,
@@ -9,7 +10,8 @@ import {
   LOG_STATUS,
   CREATE_BUDGET,
   BUDGET_CREATED,
-  GET_FILES
+  GET_FILES,
+  UPDATE_BUDGET_TITLE
 } from './constants';
 
 export function getSheetData(slug) {
@@ -39,7 +41,15 @@ export function receivedFiles(ResultData) {
 export function updateSectionData(data, slug) {
 	return {
     type: UPDATE_SECTION_DATA,
-    data,
+    payload:data,
+    slug
+	};
+}
+
+export function updateBudgetTitle(data, slug) {
+	return {
+    type: UPDATE_BUDGET_TITLE,
+    payload:data,
     slug
 	};
 }
@@ -47,6 +57,13 @@ export function updateSectionData(data, slug) {
 export function saveSheetData(slug) {
 	return {
     type: SAVE_DATA,
+    payload:slug
+	};
+}
+
+export function savedSheet(slug) {
+	return {
+    type: DATA_SAVED,
     payload:slug
 	};
 }

@@ -8,8 +8,10 @@ import {
   GET_FILES,
   RECEIVED_FILES,
   GET_DATA,
+  DATA_SAVED,
   RECEIVED_DATA,
-  SAVE_DATA
+  SAVE_DATA,
+  UPDATE_BUDGET_TITLE
 } from './constants';
 
 const EMPTY = {};
@@ -45,10 +47,10 @@ export const receiveFiles = (state, action)=>{
 export const sendData = (state, action)=>{
   return {
     ...state,
-    sheetData:action.data,
     googleApp:{
       ...state.googleApp,
-      action: SAVE_DATA
+      action: SAVE_DATA,
+      data: action.payload
     }
   }
 }
@@ -85,6 +87,14 @@ export const googleAppAction = (state, action)=>{
           data: action.payload
         }
       }
+    case DATA_SAVED:return {
+        ...state,
+        googleApp:{
+          ...state.googleApp,
+          action: DATA_SAVED,
+          data: action.payload
+        }
+      }
     default: state
   }
 }
@@ -93,27 +103,44 @@ const getSum = (total, num)=> {
   return Number(total) + Number(num);
 }
 
-export const updateSection = (state, action)=>{
-  if(action.type===UPDATE_SECTION_DATA){
-    const data = action.data;
+export const updateBudgetTitle = (state, action)=>{
+  if(action.type===UPDATE_BUDGET_TITLE){
+    const payload = action.payload;
     const sheetData = {
       ...state.sheetData
     };
-    const daysArray = data.data;
-    const quantity = data.data.lenght ? data.data.reduce(getSum) : 0;
-    console.log('updateSection', daysArray, quantity);
-    sheetData[action.slug][data.type].values[data.index].dayQtd = daysArray.join();
-    sheetData[action.slug][data.type].values[data.index].quantity = quantity;
+    sheetData[action.slug].film = payload.film;
+    sheetData[action.slug].client = payload.client;
     return {
       ...state,
       sheetData
+    }
+  }
+}
+
+export const updateSection = (state, action)=>{
+  if(action.type===UPDATE_SECTION_DATA){
+    const payload = action.payload;
+    const sheetData = {
+      ...state.sheetData
+    };
+    const daysArray = payload.data;
+    const quantity = daysArray.length ? daysArray.reduce(getSum) : 0;
+    sheetData[action.slug][payload.type].values[payload.index].dayQtd = daysArray.join();
+    sheetData[action.slug][payload.type].values[payload.index].quantity = quantity;
+    return {
+      ...state,
+      sheetData,
+      googleApp:{
+        ...state.googleApp,
+        action: UPDATE_SECTION_DATA
+      }
     }
   } else{
     return {
       ...state
     }
   }
-  
 }
 
 export const signReducer = (state, action)=>{

@@ -17,12 +17,32 @@ class Budget extends Component {
   constructor(props){
     super(props);
     this.state = {
-      slug:null
+      slug:null,
+      film:null,
+      client:null,
     }
   }
 
-  handleChange = (e) => {
-    this.setState({inputValue: e.target.value});
+  onChangeFilm = (e)=>{
+    const { value } = e.target;
+    const { match:{params}, sheetData } = this.props;
+    const { slug } = params;
+    const newFileData = {
+      ...sheetData[slug],
+      film:value
+    }
+    this.props.updateBudgetTitle(newFileData, slug);
+  }
+
+  onChangeClient= (e)=>{
+    const { value } = e.target;
+    const { match:{params}, sheetData } = this.props;
+    const { slug } = params;
+    const newFileData = {
+      ...sheetData[slug],
+      client:value
+    }
+    this.props.updateBudgetTitle(newFileData, slug);
   }
 
   render() {
@@ -51,8 +71,8 @@ class Budget extends Component {
        } = fileData;
       return (
         <div class={style.home}>
-          <h1><Input data={client}/></h1>
-          <p><Input data={film}/></p>
+          <h1><Input data={client} onChange={this.onChangeClient}/></h1>
+          <p><Input data={film} onChange={this.onChangeFilm}/></p>
           <Section type="communication" slug={slug} data={communication}/>
           <Section type="electricity" slug={slug} data={electricity}/>
           <Section type="others" slug={slug} data={others}/>
