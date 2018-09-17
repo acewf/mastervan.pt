@@ -16,7 +16,6 @@ export default class Item extends Component {
 
     const { dayQtd, quantity, slug } = props;
     const days = dayQtd.length ? dayQtd.split(',').map(i=>Number(i)) : [Number(dayQtd)];
-
     this.state = {
       days,
       slug,
@@ -32,9 +31,6 @@ export default class Item extends Component {
         index:this.props.index,
         data:data.days
       }, slug);
-      if(data.quantity>=0){
-        this.setState({quantity:data.quantity})
-      }
     }
   }
 
@@ -82,8 +78,8 @@ export default class Item extends Component {
   }
 
   render() {
-    const { obs, price, name } = this.props;
-    const { days, quantity } = this.state;
+    const { price, name, quantity, dayQtd } = this.props;
+    const { days } = this.state;
     const listOfDays = days.map(this.dayQuantity);
     return (
       <div  class={style.item}>

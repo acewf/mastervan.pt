@@ -6,7 +6,7 @@ import style from './style.less';
 
 import * as actions from './../../actions';
 import reduce from '../../reducers';
-import { GET_DATA, RECEIVED_DATA, GET_FILES } from '../../constants';
+import { GET_DATA, DATA_SAVED, SAVE_DATA, RECEIVED_DATA, GET_FILES } from '../../constants';
 
 import { NewBudgetBt, SaveBudgetBt } from './actionButtons'
 
@@ -33,24 +33,14 @@ export default class Header extends Component {
   saveData = ()=>{
     const { slug } = this.state;
     const { saveSheetData } = this.props;
-    // saveSheetData(slug)
-    //this.setState({ activeScreen:screens.LOADING});
-    // googleApp.saveData(this.props.sheetData, this.dataSaved);
+    this.setState({ activeScreen:screens.LOADING});
+    saveSheetData(slug);
   }
 
   createBudget = ()=>{
-    const { googleApp, newBudget } = this.props;
+    const { newBudget } = this.props;
     this.setState({activeScreen:screens.LOADING});
     newBudget();
-  }
-
-  budgetCreated = ({status,data})=>{
-    if(status){
-      const { history } = this.props;
-      const {id} = data;
-      this.setState({activeScreen:screens.SAVE});
-      history.push(`/budget/${id}`);
-    }
   }
 
   locationChanged = (props)=>{
@@ -59,7 +49,7 @@ export default class Header extends Component {
     const { slug } = params;
     const { activeScreen } = this.state;
 
-    const isLoading = (action === GET_DATA || action===GET_FILES);
+    const isLoading = (action === GET_DATA || action===GET_FILES || action===SAVE_DATA);
     if(isLoading && activeScreen!==screens.LOADING){
       this.setState({activeScreen:screens.LOADING, slug});
     } else if(!isLoading && slug && activeScreen!==screens.SAVE){
@@ -69,8 +59,16 @@ export default class Header extends Component {
     }
   }
 
+  componentDidUpdate(){
+    const { googleApp: { action } } = this.props;
+    const { activeScreen } = this.state;
+    if(action===DATA_SAVED && activeScreen===screens.LOADING){
+      this.dataSaved();
+    }
+  }
+
 	render() {    
-    const { auth, signIn, location } = this.props;
+    const { auth, signIn } = this.props;
 
     if(!auth){
       return (

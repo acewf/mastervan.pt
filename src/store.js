@@ -3,6 +3,7 @@ import {
   RECEIVED_DATA,
   RECEIVED_FILES,
   UPDATE_SECTION_DATA,
+  UPDATE_BUDGET_TITLE,
   SIGN_IN,
   SIGN_OUT,
   LOG_STATUS,
@@ -10,13 +11,15 @@ import {
   BUDGET_CREATED,
   GET_FILES,
   GET_DATA,
-  SAVE_DATA
+  SAVE_DATA,
+  DATA_SAVED
 } from './constants';
 
 import { 
   receiveData, receiveFiles,
   updateSection, signReducer, 
-  googleAppAction, sendData
+  googleAppAction, sendData,
+  updateBudgetTitle
 } from './reducers';
 
 let ACTIONS = {
@@ -24,13 +27,15 @@ let ACTIONS = {
   [SAVE_DATA]:sendData,
   [RECEIVED_FILES]:receiveFiles,
   [UPDATE_SECTION_DATA]:updateSection,
+  [UPDATE_BUDGET_TITLE]:updateBudgetTitle,
   [SIGN_IN]:signReducer,
   [SIGN_OUT]:signReducer,
   [LOG_STATUS]:signReducer,
   [CREATE_BUDGET]:googleAppAction,
   [BUDGET_CREATED]:googleAppAction,
   [GET_FILES]:googleAppAction,
-  [GET_DATA]:googleAppAction
+  [GET_DATA]:googleAppAction,
+  [DATA_SAVED]:googleAppAction
 };
 
 const INITIAL = {

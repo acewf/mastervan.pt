@@ -6,7 +6,8 @@ import {
   CLIENT_ID,
   SCOPES,
   SCRIPT_ID,
-  GET_DATA
+  GET_DATA,
+  SAVE_DATA
 } from './../constants';
 
 import * as actions from './../actions';
@@ -17,6 +18,7 @@ const defaultState =  {
   gettingFiles:false,
   creatingBudget:false,
   gettingFileData:false,
+  savingFileData:false,
 }
 
 @withRouter
@@ -38,7 +40,8 @@ export default class GoogleApp{
         ...state,
         gettingFiles:defaultState.gettingFiles,
         creatingBudget:defaultState.creatingBudget,
-        gettingFileData:defaultState.gettingFileData
+        gettingFileData:defaultState.gettingFileData,
+        savingFileData:defaultState.savingFileData
       }
       if(action===GET_FILES && !state.gettingFiles){
         newState.gettingFiles = true;
@@ -48,6 +51,10 @@ export default class GoogleApp{
       }
       if(action===GET_DATA && !state.gettingFileData){
         newState.gettingFileData = true;
+      }
+
+      if(action===SAVE_DATA && !state.savingFileData){
+        newState.savingFileData = true;
       }
 
       return newState;
@@ -65,10 +72,11 @@ export default class GoogleApp{
     const { 
       gettingFiles,
       creatingBudget,
-      gettingFileData
+      gettingFileData,
+      savingFileData
     } = this.state;
 
-    const { googleApp } = this.props;
+    const { googleApp, sheetData } = this.props;
 
     if(gettingFiles){
       this.getFiles(this.gotFiles);
@@ -78,6 +86,14 @@ export default class GoogleApp{
     }
     if(gettingFileData){
       this.getFileData(googleApp.data,this.gotFileData);
+    }
+    if(savingFileData){
+      const id = googleApp.data;
+      const data = {
+        ...sheetData[id],
+        id
+      };
+      this.saveData(data,this.dataSaved);
     }
     return (null);
   }
@@ -118,6 +134,12 @@ export default class GoogleApp{
     });
   }
 
+  dataSaved = (req)=>{
+    const { savedSheet } = this.props;
+    this.getFiles(this.gotFiles);
+    savedSheet(req.data.slug);
+  }
+
   newBudget = (callback)=>{
     this.executeRequest({
         function: 'createNewFile',
@@ -126,6 +148,7 @@ export default class GoogleApp{
   }
 
   budgetCreated = (req)=>{
+    this.getFiles(this.gotFiles);
     this.props.history.push(`/budget/${req.data.id}`);
     this.props.budgetCreated(req);
   }
