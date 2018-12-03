@@ -4,6 +4,7 @@ import {
   RECEIVED_FILES,
   UPDATE_SECTION_DATA,
   UPDATE_BUDGET_TITLE,
+  UPDATE_BUDGET_DATES,
   SIGN_IN,
   SIGN_OUT,
   LOG_STATUS,
@@ -19,7 +20,7 @@ import {
   receiveData, receiveFiles,
   updateSection, signReducer, 
   googleAppAction, sendData,
-  updateBudgetTitle
+  updateBudgetTitle, updateBudgetDates
 } from './reducers';
 
 let ACTIONS = {
@@ -28,6 +29,7 @@ let ACTIONS = {
   [RECEIVED_FILES]:receiveFiles,
   [UPDATE_SECTION_DATA]:updateSection,
   [UPDATE_BUDGET_TITLE]:updateBudgetTitle,
+  [UPDATE_BUDGET_DATES]:updateBudgetDates,
   [SIGN_IN]:signReducer,
   [SIGN_OUT]:signReducer,
   [LOG_STATUS]:signReducer,

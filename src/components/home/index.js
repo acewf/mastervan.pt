@@ -46,15 +46,15 @@ export default class Home extends Component {
   }
 
   getFiles = ()=>{
-    const { getFiles, files } = this.props;
-    if(files.length<1){
+    const { getFiles, files, googleApp } = this.props;
+    if(files.length<1 && googleApp.action===null){
       this.setState({loading:true})
       getFiles();
     }
   }
 
   render() {
-    const { files, auth } = this.props;
+    const { files, auth, appRoot } = this.props;
     const { loading , filesLoaded} = this.state;
 
     if(!auth){
@@ -71,7 +71,7 @@ export default class Home extends Component {
       return (
         <div class={style.home}>
           <h1>List of budgets</h1>
-          <Files data={files}/>
+          <Files appRoot={appRoot} data={files}/>
         </div>
       );
     } else {

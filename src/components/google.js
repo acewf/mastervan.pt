@@ -6,6 +6,7 @@ import {
   CLIENT_ID,
   SCOPES,
   SCRIPT_ID,
+  API_KEY,
   GET_DATA,
   SAVE_DATA
 } from './../constants';
@@ -18,7 +19,7 @@ const defaultState =  {
   gettingFiles:false,
   creatingBudget:false,
   gettingFileData:false,
-  savingFileData:false,
+  savingFileData:false
 }
 
 @withRouter
@@ -65,7 +66,7 @@ export default class GoogleApp{
   addScript = ()=>{
     var newScript = document.createElement("script");
     window.document.head.appendChild(newScript);
-    newScript.src = 'https://apis.google.com/js/client.js?onload=isReady';
+    newScript.src = 'https://apis.google.com/js/api.js?onload=isReady';
   }
 
   render(){
@@ -99,38 +100,39 @@ export default class GoogleApp{
   }
 
   isReady =()=>{
-    gapi.auth.authorize({
-        'client_id': CLIENT_ID,
-          'scope': SCOPES,
-        'immediate': true
-    }, this.needsAuth);
+    gapi.load('client:auth2', this.initClient);
   }
 
-  needsAuth =(authResult)=>{
-    const { props: { changeLogStatus } } = this;
-    const isAuth = (authResult && !authResult.error);
-    if(!isAuth){
-      changeLogStatus(false);
-      return;
+  initClient = ()=>{
+    gapi.client.init({
+      apiKey: API_KEY,
+      clientId: CLIENT_ID,
+      scope: SCOPES
+    }).then(this.didInit);
+  }
+
+  didInit = ()=>{
+    gapi.auth2.getAuthInstance().isSignedIn.listen(this.updateSigninStatus);
+    this.updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+  }
+
+  updateSigninStatus = (isSignedIn)=>{
+    const GoogleAuth = gapi.auth2.getAuthInstance();
+    const isAuthorized = GoogleAuth.currentUser.get().hasGrantedScopes(SCOPES);
+    if(!isAuthorized){
+      var GoogleUser = GoogleAuth.currentUser.get();
+      GoogleUser.grant({'scope': SCOPES});
     }
-    changeLogStatus(true);
-  }
-
-  auth = (event)=> {
-    gapi.auth.authorize({
-        client_id: CLIENT_ID,
-        scope: SCOPES,
-        immediate: false
-      },
-      this.needsAuth);
+    
+    const { changeLogStatus, auth } = this.props;
+    changeLogStatus(isSignedIn);
   }
 
   saveData = (data,callback)=>{
     this.executeRequest({
         function: 'doPost',
         callback,
-        parameters: data,
-        devMode: true // Optional.
+        parameters: data
     });
   }
 
@@ -165,6 +167,7 @@ export default class GoogleApp{
     const { googleApp } = this.props;
     const slug = googleApp.data;
     this.props.receivedSheetData(req.data, slug);
+    this.getFiles(this.gotFiles);
   }
 
   getFiles=(callback)=>{
@@ -179,6 +182,7 @@ export default class GoogleApp{
   }
 
   executeRequest =(request)=>{
+    gapi.client.setToken(gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse())
       var op = gapi.client.request({
         'root': 'https://script.googleapis.com',
         'path': 'v1/scripts/' + SCRIPT_ID + ':run',
