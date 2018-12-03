@@ -6,7 +6,7 @@ import style from './style.less';
 
 import * as actions from './../../actions';
 import reduce from '../../reducers';
-import { GET_DATA, DATA_SAVED, SAVE_DATA, RECEIVED_DATA, GET_FILES } from '../../constants';
+import { GET_DATA, DATA_SAVED, SAVE_DATA, GET_FILES, SCOPES } from '../../constants';
 
 import { NewBudgetBt, SaveBudgetBt } from './actionButtons'
 
@@ -26,7 +26,7 @@ export default class Header extends Component {
 		}
   }
 
-  dataSaved = ({status,data})=>{
+  dataSaved = ()=>{
     this.setState({activeScreen:screens.SAVE});
   }
   
@@ -67,14 +67,23 @@ export default class Header extends Component {
     }
   }
 
+  signIn = ()=>{
+    const { signIn } = this.props; 
+    signIn();
+    if(gapi){
+      const GoogleAuth = gapi.auth2.getAuthInstance();
+      GoogleAuth.signIn();
+    }
+  }
+
 	render() {    
-    const { auth, signIn } = this.props;
+    const { auth, appRoot } = this.props;
 
     if(!auth){
       return (
         <header class={style.header}>
           <h1>Sign in to use Budget App</h1>
-          <button class={`${style.auth} icon-user`} onClick={signIn}>authenticate</button>
+          <button class={`${style.auth} icon-user`} onClick={this.signIn}>authenticate</button>
         </header>  
       );
     }
@@ -106,7 +115,7 @@ export default class Header extends Component {
 				<h1>Budget App</h1>
 				<nav>
           {btElem}
-					<Link to="/">Home</Link>
+					<Link to={`/`}>Home</Link>
 					<Link to="/profile">Me</Link>
 				</nav>
 			</header>

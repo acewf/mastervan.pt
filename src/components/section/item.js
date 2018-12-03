@@ -87,7 +87,7 @@ export default class Item extends Component {
           <h5>{name}</h5>
           <div class={style.price}>Item Price:{price}€</div>
           <div class={style.quantity}>Total Quantity:{quantity}</div>
-          <button onClick={this.addDay}  class={style.addDay}>Add day</button>
+          <button onClick={this.addDay}  class={`${style.addDay} icon-calendar-plus-o`}>Add</button>
         </div>
         <ul>
           {listOfDays}

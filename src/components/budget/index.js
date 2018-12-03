@@ -8,6 +8,7 @@ import reduce from '../../reducers';
 
 import Section from './../section';
 import Loading from './../loading';
+import DatePicker from './../datePicker';
 
 import Input from './Input';
 
@@ -20,7 +21,27 @@ class Budget extends Component {
       slug:null,
       film:null,
       client:null,
+      activeDate:null,
+      date:{
+        startDate:new Date(),
+        endDate: new Date()
+      },
+      datePickerOpened: false
     }
+  }
+
+  dateReciever = (date)=> {
+    const { activeDate, slug } = this.state;
+    this.props.updateBudgetDates({activeDate,date: date.toLocaleDateString('en-gb')}, slug);
+  } 
+
+  openDatePicker = (e)=> {
+    const dateProp =  e.target.getAttribute('dateProp');
+    this.setState({ datePickerOpened: true, activeDate:dateProp });
+  }
+  
+  closeDatePicker = ()=> {
+    this.setState({ datePickerOpened: false });
   }
 
   onChangeFilm = (e)=>{
@@ -47,6 +68,7 @@ class Budget extends Component {
 
   render() {
     const { match:{params}, sheetData, auth, getSheetData } = this.props;
+    const { datePickerOpened, activeDate } = this.state;
     const { slug } = params;
     const fileData = sheetData[slug];
 
@@ -64,23 +86,34 @@ class Budget extends Component {
     
     if(fileData){
       const { 
-        client, film,
+        client, film, startDate, endDate, budgetTotal,
         communication, electricity,
-        caradds, signs, hotcold,
+        caradds, signs, hotcold, furniture,
         dress, lounge, others
        } = fileData;
+
       return (
         <div class={style.home}>
           <h1><Input data={client} onChange={this.onChangeClient}/></h1>
           <p><Input data={film} onChange={this.onChangeFilm}/></p>
+          <div  class={`${style.date} icon-calendar`} dateProp='startDate' onClick={this.openDatePicker}>{startDate}</div>
+          <div  class={`${style.date} icon-calendar`} dateProp='endDate' onClick={this.openDatePicker}>{endDate}</div>
+          <div  class={style.total}>{budgetTotal}</div>
+          <DatePicker 
+            activeDate={fileData[activeDate]}
+            closeFunction={this.closeDatePicker} 
+            opened={datePickerOpened} 
+            dateReciever={this.dateReciever}
+          />
           <Section type="communication" slug={slug} data={communication}/>
-          <Section type="electricity" slug={slug} data={electricity}/>
-          <Section type="others" slug={slug} data={others}/>
-          <Section type="hotcold" slug={slug} data={hotcold}/>
           <Section type="signs" slug={slug} data={signs}/>
+          <Section type="others" slug={slug} data={others}/>
+          <Section type="furniture" slug={slug} data={furniture}/>
+          <Section type="hotcold" slug={slug} data={hotcold}/>
           <Section type="dress" slug={slug} data={dress}/>
           <Section type="caradds" slug={slug} data={caradds}/>
           <Section type="lounge" slug={slug} data={lounge}/>
+          <Section type="electricity" slug={slug} data={electricity}/>
         </div>
       );
     } else {

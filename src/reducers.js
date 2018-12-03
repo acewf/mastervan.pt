@@ -11,7 +11,8 @@ import {
   DATA_SAVED,
   RECEIVED_DATA,
   SAVE_DATA,
-  UPDATE_BUDGET_TITLE
+  UPDATE_BUDGET_TITLE,
+  UPDATE_BUDGET_DATES
 } from './constants';
 
 const EMPTY = {};
@@ -118,6 +119,21 @@ export const updateBudgetTitle = (state, action)=>{
   }
 }
 
+export const updateBudgetDates= (state, action)=>{
+  if(action.type===UPDATE_BUDGET_DATES){
+    const payload = action.payload;
+    const sheetData = {
+      ...state.sheetData
+    };
+    sheetData[action.slug][payload.activeDate] = payload.date;
+    
+    return {
+      ...state,
+      sheetData
+    }
+  }
+}
+
 export const updateSection = (state, action)=>{
   if(action.type===UPDATE_SECTION_DATA){
     const payload = action.payload;
@@ -126,8 +142,13 @@ export const updateSection = (state, action)=>{
     };
     const daysArray = payload.data;
     const quantity = daysArray.length ? daysArray.reduce(getSum) : 0;
+    const prevQtd = sheetData[action.slug][payload.type].values[payload.index].quantity;
     sheetData[action.slug][payload.type].values[payload.index].dayQtd = daysArray.join();
     sheetData[action.slug][payload.type].values[payload.index].quantity = quantity;
+    const itemPrice = sheetData[action.slug][payload.type].values[payload.index].price;
+    const diff = quantity-prevQtd;
+    sheetData[action.slug].budgetTotal += diff*itemPrice
+    
     return {
       ...state,
       sheetData,

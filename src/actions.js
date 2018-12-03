@@ -11,7 +11,8 @@ import {
   CREATE_BUDGET,
   BUDGET_CREATED,
   GET_FILES,
-  UPDATE_BUDGET_TITLE
+  UPDATE_BUDGET_TITLE,
+  UPDATE_BUDGET_DATES
 } from './constants';
 
 export function getSheetData(slug) {
@@ -49,6 +50,14 @@ export function updateSectionData(data, slug) {
 export function updateBudgetTitle(data, slug) {
 	return {
     type: UPDATE_BUDGET_TITLE,
+    payload:data,
+    slug
+	};
+}
+
+export function updateBudgetDates(data, slug) {
+	return {
+    type: UPDATE_BUDGET_DATES,
     payload:data,
     slug
 	};

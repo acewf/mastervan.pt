@@ -11,6 +11,7 @@ import GoogleApp from './google';
 
 export default class App extends Component {
 	render() {
+    const baseFolder = ''
 		return (
       <Provider store={store}>
         <BrowserRouter>
@@ -19,20 +20,16 @@ export default class App extends Component {
             <GoogleApp />
             <Switch>
                 <Route exact 
-                  path="/" 
+                  path="/"
                   render={()=><Home />
                 } />
                 <Route
-                  path="/budget/:slug" 
+                  path={`/budget/:slug`}
                   render={Budget}
                 />
                 <Route  
-                  path="/profile" 
+                  path={`/profile`}
                   render={()=> <Profile user="me" />
-                } />
-                <Route  
-                  path="/profile/:user" 
-                  render={()=> <Profile />
                 } />
               </Switch>
           </div>

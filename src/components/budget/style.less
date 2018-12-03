@@ -21,3 +21,22 @@
     background: transparent;
   }
 }
+
+.date{
+  display: inline-block;
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid #000000;
+}
+
+.total{
+  display: inline-block;
+  margin-left: 10px;
+  border-bottom: 2px solid #000000;
+
+  &::after{
+    content: '€';
+    width: 20px;
+    height: 20px;
+  }
+}
